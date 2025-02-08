@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query 
 from sqlalchemy.orm import Session
 from src.services.contact_service import (
     get_all_contacts,
@@ -6,9 +6,11 @@ from src.services.contact_service import (
     update_existing_contact,
     delete_existing_contact,
     get_existing_contact,
+    search_for_contacts,
 )
 from src.schemas import ContactCreate, ContactResponse
 from src.database.db import get_db
+from typing import List
 
 # Create router
 router = APIRouter()
@@ -37,3 +39,10 @@ def update_contact(contact_id: int, contact: ContactCreate, db: Session = Depend
 def delete_contact(contact_id: int, db: Session = Depends(get_db)):
     """Delete contact by ID"""
     return delete_existing_contact(db, contact_id)
+
+@router.get("/search/", response_model=List[ContactResponse])
+def search_contacts(query: str = Query(..., description="Search term (name, surname, or email)"), db: Session = Depends(get_db)):
+    """
+    Search for contacts by first name, last name, or email.
+    """
+    return search_for_contacts(db, query)

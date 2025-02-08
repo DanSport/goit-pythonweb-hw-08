@@ -6,6 +6,7 @@ from src.repository.contact_repository import (
     update_contact_in_db,
     delete_contact_from_db,
     get_contact_by_id,
+    search_contacts,
 )
 
 def get_all_contacts(db: Session, skip: int, limit: int):
@@ -30,3 +31,7 @@ def get_existing_contact(db: Session, contact_id: int):
     if not contact:
         raise HTTPException(status_code=404, detail="Contact not found")
     return contact
+
+def search_for_contacts(db: Session, query: str):
+    """Service function to search for contacts"""
+    return search_contacts(db, query)

@@ -34,3 +34,11 @@ def delete_contact_from_db(db: Session, contact_id: int):
 def get_contact_by_id(db: Session, contact_id: int):
     """Retrieve a contact by ID"""
     return db.query(Contact).filter(Contact.id == contact_id).first()
+
+def search_contacts(db: Session, query: str):
+    """Search contacts by first name, last name, or email"""
+    return db.query(Contact).filter(
+        (Contact.first_name.ilike(f"%{query}%")) |
+        (Contact.last_name.ilike(f"%{query}%")) |
+        (Contact.email.ilike(f"%{query}%"))
+    ).all()
